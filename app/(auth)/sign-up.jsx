@@ -1,10 +1,11 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { createUser } from "../../lib/appwrite";
 const SignUp = () => {
   const [form, setForm] = useState({
     username: "",
@@ -12,10 +13,30 @@ const SignUp = () => {
     password: "",
   });
 
-  const [loading, isLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
-  const submitForm = () => {
+  const submitForm = async () => {
+    if (!form.username || !form.email || !form.password) {
+      Alert.alert("Error", "Please fill out all the fields");
+      return;
+    }
+    setIsLoading(true);
     console.log(form);
+    try {
+      const results = await createUser(
+        form.email,
+        form.password,
+        form.username
+      );
+
+      //set to global state
+
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -28,21 +49,21 @@ const SignUp = () => {
           />
           <Text className="text-white text-2xl font-pbold my-6">Sign Up</Text>
           <FormField
-            text="Username"
+            text="username"
             value={form.username}
             handleTextChange={(e) => setForm({ ...form, username: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
-            text="Email"
+            text="email"
             value={form.email}
             handleTextChange={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
-            text="Password"
+            text="password"
             value={form.password}
             handleTextChange={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"

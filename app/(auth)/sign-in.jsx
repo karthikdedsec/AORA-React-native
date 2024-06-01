@@ -25,14 +25,14 @@ const SignIn = () => {
           />
           <Text className="text-white text-2xl font-pbold my-6">Sign In</Text>
           <FormField
-            text="Email"
+            text="email"
             value={form.email}
             handleTextChange={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
-            text="Password"
+            text="password"
             value={form.password}
             handleTextChange={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
